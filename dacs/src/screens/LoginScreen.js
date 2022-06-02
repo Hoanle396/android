@@ -13,31 +13,26 @@ export default class LoginScreen extends Component {
    componentDidMount() {
 
    }
-   // const handleSigin =  () => {
-
-   //    if (email && password) {
-   //       setLoading(true);
-   //       axios.post('auth/login', {
-   //          username: email,
-   //          password: password
-   //       })
-   //          .then(async response => {
-   //             await  AsyncStorage.setItem('access_token', response.data.access_token);
-   //             await  AsyncStorage.setItem('money', ""+response.data.user.money);
-   //             await  AsyncStorage.setItem('firstName', response.data.user.firstName);
-   //             await  AsyncStorage.setItem('lastName', response.data.user.lastName);
-   //             await  AsyncStorage.setItem('avatarUrl', response.data.user.avatarUrl);
-   //             props.navigation.replace('Home');
-   //          })
-   //          .catch(error => {
-   //             console.log(error)
-   //          })
-   //          .finally(() => {
-   //             setLoading(false);
-   //          })
-   //    }
-   // }
-
+   signIn = (info) => {
+      axios.post('auth/login/google', {
+         givenName: info.user.givenName,
+         familyName: info.user.familyName,
+         email: info.user.email,
+         photoUrl: info.user.photo,
+         idToken: info.idToken
+      })
+         .then(async response => {
+            await AsyncStorage.setItem('access_token', response.data.access_token);
+            await AsyncStorage.setItem('money', "" + response.data.user.money);
+            await AsyncStorage.setItem('firstName', response.data.user.firstName);
+            await AsyncStorage.setItem('lastName', response.data.user.lastName);
+            await AsyncStorage.setItem('avatarUrl', response.data.user.avatarUrl);
+            this.props.navigation.replace('Home');
+         })
+         .catch(error => {
+            console.log(error)
+         })
+   }
    _signIn = async () => {
       try {
          await GoogleSignin.configure({
@@ -47,7 +42,7 @@ export default class LoginScreen extends Component {
          await GoogleSignin.hasPlayServices();
          const accessToken = await GoogleSignin.signIn();
          console.log(accessToken)
-         // setloggedIn(true);
+         this.signIn(accessToken)
 
       } catch (error) {
          if (error.code === statusCodes.SIGN_IN_CANCELLED) {

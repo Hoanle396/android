@@ -22,6 +22,25 @@ const CourseDetails = ({ route, navigation }) => {
         setLoading(false)
       })
   }
+  const handler = () => {
+    axiosInstance.get('/mycourse')
+      .then(res => {
+        console.log(res.data)
+        console.log(row.id)
+        var data = res.data.find(function(ele) {
+          return ele.course.id === row.id;
+        });
+        if (data) {
+          navigation.navigate('Mycourse')
+        }
+        else {
+          navigation.navigate('checkout', { title: row.title, id: row.id, name: "buy course", discount: row.discount })
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
   if (loading) {
     return (<Loadding />)
   }
@@ -62,7 +81,7 @@ const CourseDetails = ({ route, navigation }) => {
                 Start learning
               </Text>
               <TouchableOpacity
-                onPress={() => navigation.navigate('checkout',{title:row.title,id:row.id,name:"buy course",discount:row.discount})}
+                onPress={() => handler()}
                 style={{
                   flexDirection: "row",
                   backgroundColor: "#f58084",
@@ -87,7 +106,7 @@ const CourseDetails = ({ route, navigation }) => {
             </View>
             <Image
               source={{ uri: row.image }}
-              style={{ marginLeft: -50, marginTop:0 ,width: 100, height: 100 }}
+              style={{ marginLeft: -50, marginTop: 0, width: 100, height: 100 }}
             />
 
           </View>
@@ -99,7 +118,7 @@ const CourseDetails = ({ route, navigation }) => {
             marginTop: 20,
             marginBottom: 10
           }}>Courses Content</Text>
-          {row.detail.map((item, index) =><Lession key={index} id={index+1} description={item.description} /> ||<Text>no content</Text> )}
+          {row.detail.map((item, index) => <Lession key={index} id={index + 1} description={item.description} /> || <Text>no content</Text>)}
 
         </ScrollView>
       </ImageBackground>

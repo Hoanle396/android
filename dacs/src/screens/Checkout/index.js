@@ -25,11 +25,13 @@ const Checkout = ({ route, navigation }) => {
 
    const handleBuyCourse = () => {
       axios.post('/wallet', { course: id, fee: newdiscount })
-         .then(response => {
-            console.log(response)
+         .then(async response => {
+            setMoney((pre)=>pre-newdiscount)
+            await AsyncStorage.setItem('money',money)
+            navigation.navigate('success')
          })
          .catch(error => {
-            console.log(error)
+            navigation.navigate('failed')
          })
    }
    const showConfirmDialog = () => {

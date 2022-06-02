@@ -1,15 +1,30 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, ImageBackground, TouchableOpacity, Image, Alert } from 'react-native'
 import { ScrollView, TextInput } from 'react-native-gesture-handler'
+import  Icon  from 'react-native-vector-icons/FontAwesome5'
 import axiosInstance from '../../axios.config'
 import CourseList from '../components/CourseList/index'
 import Loadding from '../components/Loadding'
+import Voice from 'react-native-voice';
 export const HomeScreen = (props) => {
   const [loading, setLoading] = useState(true)
   const [row,setRow] = useState([])
+  const [search,setSearch] = useState()
+  const [results, setResults] = useState([]);
+  const [partialResults, setPartialResults] = useState([]);
   useEffect(() => {
     loadData()
   }, [])
+
+  useEffect(() => {
+    Voice.onSpeechPartialResults = onSpeechPartialResults;
+    Voice.onSpeechStart = onSpeechStart;
+    Voice.onSpeechEnd = onSpeechEnd;
+    return () => {
+      //destroy the process after switching the screen
+      Voice.destroy().then(Voice.removeAllListeners);
+    };
+  }, []);
   const loadData = () => {
     axiosInstance.get('/course')
       .then((response) => {
@@ -21,6 +36,40 @@ export const HomeScreen = (props) => {
       .finally(() => {
         setLoading(false)
       })
+  }
+  const onSpeechStart = (e) => {
+    console.log('onSpeechStart: ', e);
+  };
+ 
+  const onSpeechEnd = (e) => {
+    console.log('onSpeechEnd: ', e);
+  };
+  const startRecognizing = async () => {
+    //Starts listening for speech for a specific locale
+    try {
+      await Voice.start('vi-VN');
+    } catch (e) {
+      console.error(e);
+    }
+  };
+  const onSpeechPartialResults =  (e) => {
+    console.log('Results: ', e.value[0]);
+    setSearch(e.value[0]);
+    if(e.value[0]){
+      handleChange(e.value[0])
+    }
+  };
+  const handleChange=  (e)=>{
+   axiosInstance.get('/course/search/'+e||search)
+    .then((response) => {
+      setRow(response.data)
+    })
+    .catch((error) => {
+      Alert.alert(error)
+    })
+    .finally(() => {
+      // setLoading(false)
+    })
   }
   if (loading) {
     return (<Loadding />)
@@ -60,11 +109,17 @@ export const HomeScreen = (props) => {
                 width: 280,
                 paddingHorizontal: 12
               }}
+              value={search}
+              onChangeText={(e)=>setSearch(e)}
+              onBlur={handleChange}
             />
-            <Image
+            <TouchableOpacity onPress={startRecognizing}>
+            <Icon name="microphone"  size={30}/>
+            </TouchableOpacity>
+            {/* <Image
               source={require('../images/sear.png')}
               style={{ height: 14, width: 14 }}
-            />
+            /> */}
           </View>
           <View style={{
             flexDirection: "row",
@@ -103,10 +158,10 @@ export const HomeScreen = (props) => {
                   fontFamily: "Bold",
                   fontSize: 12
                 }}>Categories</Text>
-                <Image
+                {/* <Image
                   source={require('../images/a3.png')}
                   style={{ marginLeft: 20, width: 8, height: 8 }}
-                />
+                /> */}
               </TouchableOpacity>
             </View>
             <Image

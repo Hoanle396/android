@@ -13,6 +13,8 @@ import { TrendHome } from '../screens/Trend';
 import MyGift from '../screens/Profile/MyGift';
 import Help from '../screens/Profile/Help';
 import Transfer from '../screens/Wallet/Transfer';
+import Success from '../screens/Checkout/success';
+import Error from '../screens/Checkout/error';
 
 const HomeStack = createNativeStackNavigator();
 
@@ -22,6 +24,8 @@ export function HomeStackScreen() {
       <HomeStack.Screen name="Home" component={HomeScreen} />
       <HomeStack.Screen name="Details" component={CourseDetails} />
       <HomeStack.Screen name="checkout" component={Checkout} />
+      <HomeStack.Screen name="success" component={Success} />
+      <HomeStack.Screen name="failed" component={Error}/>
     </HomeStack.Navigator>
   );
 }
