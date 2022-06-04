@@ -13,13 +13,13 @@ export default function HomeTab() {
           if (route.name === 'Home') {
             iconName = 'home'
               
-          } else if (route.name === 'Trend') {
-            iconName = 'fire';
+          // } else if (route.name === 'Trend') {
+          //   iconName = 'fire';
           }
           else if (route.name === 'Person') {
             iconName = 'user';
           }
-          else if (route.name === 'Wallets') {
+          else if (route.name === 'Wallet') {
             iconName = 'wallet';
           }
 
@@ -31,8 +31,8 @@ export default function HomeTab() {
         headerShown: false
       }) } >
         <Tab.Screen name="Home"  component={HomeStackScreen} />
-        <Tab.Screen name="Trend" component={TrendScreen} />
-        <Tab.Screen name="Wallets" component={WalletScreen} />
+        {/* <Tab.Screen name="Trend" component={TrendScreen} /> */}
+        <Tab.Screen name="Wallet" component={WalletScreen} />
         <Tab.Screen name="Person" component={PersonScreen} />
       </Tab.Navigator>
   );

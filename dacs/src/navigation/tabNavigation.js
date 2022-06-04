@@ -9,12 +9,13 @@ import WalletHome from '../screens/Wallet'
 import Mycourse from '../screens/Profile/mycourse';
 import Mylession from '../screens/Profile/mylession';
 import Learning from '../screens/Profile/Learning';
-import { TrendHome } from '../screens/Trend';
+// import { TrendHome } from '../screens/Trend';
 import MyGift from '../screens/Profile/MyGift';
 import Help from '../screens/Profile/Help';
 import Transfer from '../screens/Wallet/Transfer';
 import Success from '../screens/Checkout/success';
 import Error from '../screens/Checkout/error';
+import Checktrans from '../screens/Wallet/checkout';
 
 const HomeStack = createNativeStackNavigator();
 
@@ -50,17 +51,18 @@ const Wallet = createNativeStackNavigator();
 export function WalletScreen() {
   return(
     <Wallet.Navigator screenOptions={{headerShown: false}}>
-    <Wallet.Screen name="Wallet" component={WalletHome} />
+    {/* <Wallet.Screen name="Wallet" component={WalletHome} /> */}
     <Wallet.Screen name="transfer" component={Transfer} />
+    <Wallet.Screen name="checktrans" component={Checktrans} />
     </Wallet.Navigator>
   )
 }
 
-const Trend = createNativeStackNavigator();
-export function TrendScreen() {
-  return (
-    <Trend.Navigator screenOptions={{headerShown: false}}>
-    <Trend.Screen name="Trend" component={TrendHome}/>
-    </Trend.Navigator>
-  )
-}
+// const Trend = createNativeStackNavigator();
+// export function TrendScreen() {
+//   return (
+//     <Trend.Navigator screenOptions={{headerShown: false}}>
+//     <Trend.Screen name="Trend" component={TrendHome}/>
+//     </Trend.Navigator>
+//   )
+// }

@@ -3,15 +3,13 @@ import { Center, FormControl, Input } from 'native-base';
 import { Alert, AsyncStorage, ImageBackground, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import axios from '../../../axios.config'
-const Checkout = ({ route, navigation }) => {
+const Checktrans = ({ route, navigation }) => {
    const [money, setMoney] = useState()
    const [fee, setFee] = useState(0)
    const [firstname, setFirstname] = useState()
    const [lastname, setLastname] = useState()
-   const [gift, setGift] = useState()
-   const [gifttitle, setGifttitle] = useState('Gift')
-   const { discount, id, name, title } = route.params
-   const [newdiscount, setNewDiscount] = useState(discount + fee)
+   const {amount, name, email ,message } = route.params
+   const [newdiscount, setNewDiscount] = useState((Number(amount) + fee))
    useEffect(() => {
       (async () => {
          const lastname = await AsyncStorage.getItem('lastName')
@@ -23,25 +21,26 @@ const Checkout = ({ route, navigation }) => {
       })()
    }, [])
 
-   const handleBuyCourse = () => {
-      axios.post('/wallet', { course: id, fee: newdiscount })
+   const handleTrans = () => {
+      axios.post('/wallet/transfer', { email: email, amount: newdiscount ,message: message})
          .then(async response => {
-            await AsyncStorage.setItem('money',""+(money-newdiscount))
-            setMoney((pre)=>(pre-newdiscount))
+            setMoney((pre)=>pre-newdiscount)
+            await AsyncStorage.setItem('money',""+money)
             navigation.navigate('success')
          })
          .catch(error => {
+            console.log(error)
             navigation.navigate('failed')
          })
    }
    const showConfirmDialog = () => {
       return Alert.alert(
          "Are your sure?",
-         "Are you sure you want to buy this course?",
+         "Are you sure you want to send this?",
          [
             {
                text: "Yes",
-               onPress: () => handleBuyCourse(),
+               onPress: () => handleTrans(),
             },
             {
                text: "No",
@@ -49,17 +48,7 @@ const Checkout = ({ route, navigation }) => {
          ]
       );
    };
-   const handleGift = () => {
-      axios.post('gift/check', { giftcode: gift })
-         .then(res => {
-            setNewDiscount((discount - (discount * res.data.percent / 100) + fee))
-            setGifttitle(res.data.message)
-         })
-         .catch(err => {
-            setNewDiscount(discount + fee)
-            setGifttitle(err.response.data.message)
-         })
-   }
+   
    return (
       <ImageBackground
          source={require('../../assets/hinhnen.png')}
@@ -111,7 +100,7 @@ const Checkout = ({ route, navigation }) => {
             </View>
 
          </View>
-         <ScrollView style={{ width: "100%", maxHeight: 500, backgroundColor: "#FFF", borderRadius: 20, marginTop: 20 }} >
+         <ScrollView style={{ width: "100%", maxHeight: 400, backgroundColor: "#FFF", borderRadius: 20, marginTop: 20 }} >
 
             <View style={{
                paddingLeft: 30
@@ -143,7 +132,7 @@ const Checkout = ({ route, navigation }) => {
                      justifyContent: "space-between"
                   }}>
                      <Text style={{ fontSize: 18, color: "#676767ff" }}>Service</Text>
-                     <Text style={{ fontSize: 18, color: "#676767ff" }}>{name}</Text>
+                     <Text style={{ fontSize: 18, color: "#676767ff" }}>Transfer</Text>
                   </View>
                </View>
                <View style={{
@@ -159,7 +148,7 @@ const Checkout = ({ route, navigation }) => {
                      alignItems: "center",
                      justifyContent: "space-between"
                   }}>
-                     <Text style={{ fontSize: 18, color: "#676767ff" }}>Customer</Text>
+                     <Text style={{ fontSize: 18, color: "#676767ff" }}>From</Text>
                      <Text style={{ fontSize: 18, color: "#676767ff" }}>{firstname + " " + lastname}</Text>
                   </View>
                </View>
@@ -176,8 +165,11 @@ const Checkout = ({ route, navigation }) => {
                      alignItems: "center",
                      justifyContent: "space-between"
                   }}>
-                     <Text style={{ fontSize: 18, color: "#676767ff" }}>Name Service</Text>
-                     <Text style={{ fontSize: 18, color: "#676767ff" }}>{title}</Text>
+                     <Text style={{ fontSize: 18, color: "#676767ff" }}>To</Text>
+                     <View style={{ flexDirection:'column',alignItems: "flex-end",justifyContent: "center"}}>
+                     <Text style={{ fontSize: 18, color: "#676767ff" }}>{name}</Text>
+                     <Text style={{ fontSize: 14, color: "#676767ff" }}>{email}</Text>
+                     </View>
                   </View>
                </View>
                <View style={{
@@ -193,8 +185,8 @@ const Checkout = ({ route, navigation }) => {
                      alignItems: "center",
                      justifyContent: "space-between"
                   }}>
-                     <Text style={{ fontSize: 18, color: "#676767ff" }}>Discount</Text>
-                     <Text style={{ fontSize: 18, color: "#676767ff" }}>{discount} VND</Text>
+                     <Text style={{ fontSize: 18, color: "#676767ff" }}>Amount</Text>
+                     <Text style={{ fontSize: 18, color: "#676767ff" }}>{amount} VND</Text>
                   </View>
                </View>
                <View style={{
@@ -216,33 +208,7 @@ const Checkout = ({ route, navigation }) => {
                      <Text style={{ fontSize: 18, color: "#676767ff" }}>{fee == 0 ? 'free' : fee}</Text>
                   </View>
                </View>
-               <View style={{
-                  marginLeft: -60,
-                  marginTop: 10,
-               }}>
-                  <Text style={{
-                     color: "#345c74",
-                     fontSize: 25,
-                     fontFamily: "Bold",
-                     width: 250,
-                  }}>
-                     {gifttitle}
-                  </Text>
-
-               </View>
-               <View style={{
-                  width: '80%'
-               }}>
-                  <FormControl>
-                     <Input
-                        borderRadius="10"
-                        bgColor="#FFFFFF"
-                        placeholder="Gift voucher"
-                        value={gift}
-                        onChangeText={(e) => setGift(e)}
-                        onBlur={handleGift} />
-                  </FormControl>
-               </View>
+               
                <View style={{
                   backgroundColor: "#f6f6f6ff",
                   borderWidth: 0.5,
@@ -282,7 +248,7 @@ const Checkout = ({ route, navigation }) => {
                   justifyContent: "center"
                }}>
                   <Icon name='lock' size={30} />
-                  <Text style={{ marginLeft: 20, fontSize: 24, color: "#0000ff" }}>Buy now</Text>
+                  <Text style={{ marginLeft: 20, fontSize: 24, color: "#0000ff" }}>Transfer</Text>
                </View>
             </TouchableOpacity>
          </Center>
@@ -290,4 +256,4 @@ const Checkout = ({ route, navigation }) => {
 
    )
 }
-export default Checkout
+export default Checktrans

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { AsyncStorage, Image, ImageBackground, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import Loadding from '../../components/Loadding'
 import Icon from 'react-native-vector-icons/AntDesign'
-import Banking from '../../components/Banking'
+import axios from '../../../axios.config'
 const Transfer = ({ route, navigation }) => {
 
   const [loading, setLoading] = useState(true)
@@ -12,13 +12,44 @@ const Transfer = ({ route, navigation }) => {
   const [name, setName] = useState()
   const [amount, setAmount] = useState()
   const [message, setMessage] = useState()
+  const [error, setError] = useState()
   useEffect(() => {
     loadData()
   }, [])
   const loadData = async () => {
     const mn = await AsyncStorage.getItem('money')
-    setMoney(mn)
+    setMoney(Number(mn))
     setLoading(false)
+  }
+
+  const handlerEmail = () => {
+    setError(null)
+    setName(null)
+    axios.get('/auth/email/' + email)
+      .then(response => {
+        setName(response.data.user.firstName + " " + response.data.user.lastName)
+      })
+      .catch(error => {
+        console.log(error.response.data.message)
+        setError(error.response.data.message)
+      })
+  }
+  const handlerAmount = () => {
+    setError(null)
+    if (money < amount) {
+      setError("You don't have enough balance")
+    }
+    if (amount <= 0) {
+      setError("Amount must be other than 0")
+    }
+  }
+  const handlerContinue = () => {
+    if (!email || !name || !amount) {
+      setError('Please enter a valid') 
+    }
+    else{
+      navigation.navigate('checktrans',{email: email, name: name, amount: amount,message:message})
+    }
   }
   if (loading) {
     return (<Loadding />)
@@ -27,7 +58,10 @@ const Transfer = ({ route, navigation }) => {
     return (
       <ImageBackground
         source={require('../../assets/hinhnen.png')}
-        style={{ width: "100%", height: "100%" }}>
+        style={{
+          width: "100%",
+          height: "100%"
+        }}>
         <View style={{
           flexDirection: "row",
           backgroundColor: "#FEE180",
@@ -49,33 +83,98 @@ const Transfer = ({ route, navigation }) => {
             </Text>
           </View>
           <Icon name="wallet" color="#FF0000" size={100}
-            style={{ marginLeft: 0, marginTop: 0 }}
-          />
+            style={{
+              marginLeft: 0,
+              marginTop: 0
+            }} />
         </View>
-        <ScrollView style={{ width: "100%", height: "100%", marginTop: 50 }} >
-          <View ><Text style={{ fontSize: 30, color: "#000000", fontWeight: "bold", marginLeft: 30 }}>To</Text>
+        <ScrollView style={{
+          width: "100%",
+          height: "100%",
+          marginTop: 50
+        }} >
+          <View ><Text style={{
+            fontSize: 30,
+            color: "#000000",
+            fontWeight: "bold",
+            marginLeft: 30
+          }}>To</Text>
 
           </View>
 
           <Center w="90%">
+
+            {error && <Text style={{
+              marginLeft: 20,
+              fontSize: 24,
+              fontWeight: "bold",
+              color: "#ff0000"
+            }}>{error}</Text>}
             <FormControl style={{ marginLeft: '10%' }}>
               <FormControl.Label>Email ID</FormControl.Label>
-              <Input value={email} onChangeText={(e) => { setEmail(e) }} type="email" borderRadius="10" bgColor="#FFFFFF" placeholder="Email" />
+              <Input
+                value={email}
+                onChangeText={(e) => { setEmail(e) }}
+                onBlur={handlerEmail}
+                type="email"
+                borderRadius="10"
+                bgColor="#FFFFFF"
+                placeholder="Email" />
             </FormControl>
             <FormControl style={{ marginLeft: '10%' }}>
               <FormControl.Label>Name</FormControl.Label>
-              <Input value={name} onChangeText={(e) => { setName(e) }} borderRadius="10" bgColor="#FFFFFF" placeholder="Name" />
+              <Input
+                value={name}
+                onChangeText={(e) => { setName(e) }}
+                editable={false}
+                borderRadius="10"
+                bgColor="#FFFFFF"
+                placeholder="Name" />
             </FormControl>
             <FormControl style={{ marginLeft: '10%' }}>
-              <FormControl.Label>Email ID</FormControl.Label>
-              <Input value={amount} onChangeText={(e) => { setAmount(e) }}  borderRadius="10" bgColor="#FFFFFF" placeholder="Amount" />
+              <FormControl.Label>Amount</FormControl.Label>
+              <Input
+                value={amount}
+                onChangeText={(e) => { setAmount(e) }}
+                onBlur={handlerAmount}
+                keyboardType="numeric"
+                borderRadius="10"
+                bgColor="#FFFFFF"
+                placeholder="Amount" />
             </FormControl>
             <FormControl style={{ marginLeft: '10%' }}>
-              <FormControl.Label>Name</FormControl.Label>
-              <Input value={message} onChangeText={(e) => { setMessage(e) }} borderRadius="10" bgColor="#FFFFFF" placeholder="Message" />
+              <FormControl.Label>Message</FormControl.Label>
+              <Input
+                value={message}
+                onChangeText={(e) => { setMessage(e) }}
+                borderRadius="10"
+                bgColor="#FFFFFF"
+                placeholder="Message"
+              />
             </FormControl>
-            <FormControl style={{ marginLeft: '10%', marginTop: 50}}>
-              <Button borderRadius="10" bgColor="#000cff" >Countinue</Button>
+            <FormControl style={{
+              marginLeft: '10%',
+              marginTop: 50,
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}>
+              <TouchableOpacity style={{
+                borderRadius: 10,
+                width: 250,
+                height: 50,
+                backgroundColor: error ? "#8e8e8e" : "#000cff",
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center'
+              }} disabled={error ? true : false}
+                onPress={handlerContinue}>
+                <View><Text style={{
+                  fontSize: 24,
+                  color: "#fe6767",
+                  fontWeight: "bold"
+                }}>Countinue</Text></View>
+              </TouchableOpacity>
             </FormControl>
           </Center>
         </ScrollView>
