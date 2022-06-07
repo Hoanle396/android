@@ -74,7 +74,7 @@ const WalletHome = ({ route, navigation }) => {
                         }}>Transfer</Text>
                      </TouchableOpacity>
                      <TouchableOpacity
-                        // onPress={() => props.navigation.navigate('Cources')}
+                        onPress={() => navigation.navigate('recharge')}
                         style={{
                            flexDirection: "column",
                            backgroundColor: "#FFFFFF",
@@ -95,7 +95,7 @@ const WalletHome = ({ route, navigation }) => {
                            fontSize: 12
                         }}>Recharge</Text>
                      </TouchableOpacity>
-                     <TouchableOpacity
+                     {/* <TouchableOpacity
                         // onPress={() => props.navigation.navigate('Cources')}
                         style={{
                            flexDirection: "column",
@@ -116,16 +116,12 @@ const WalletHome = ({ route, navigation }) => {
                            fontFamily: "Bold",
                            fontSize: 12
                         }}>Withdraw</Text>
-                     </TouchableOpacity>
+                     </TouchableOpacity> */}
                   </View>
                </View>
                {/* {row.detail.map((item, index) =><Lession key={index} id={index+1} description={item.description} pressed={()=>navigation.navigate('learning',{url:item.lessonUrl})}/> ||<Text>no content</Text> )} */}
                <View><Text style={{ fontSize: 30, color: "#000000", fontWeight: "bold", marginLeft: 30 }}>History</Text></View>
                <Center w="100%">
-                  <Banking />
-                  <Banking />
-                  <Banking />
-                  <Banking />
                   <Banking />
                </Center>
             </ScrollView>
