@@ -1,27 +1,32 @@
 import { Center } from 'native-base'
 import React, { useEffect, useState } from 'react'
 import { Alert, AsyncStorage, Image, ImageBackground, ScrollView, Text, View } from 'react-native'
-import Icon from 'react-native-vector-icons/FontAwesome5'
+
 import axios from '../../../axios.config'
+import Gift from '../../components/Gift'
 import Loadding from '../../components/Loadding'
 export default function MyGift({ route, navigation }) {
 
-
+  const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [firstname, setFirstname] = useState()
   const [lastname, setLastname] = useState()
   const [avt, setAvt] = useState()
   useEffect(() => {
-    (async () => {
-      const lname = await AsyncStorage.getItem('lastName')
-      const fname = await AsyncStorage.getItem('firstName')
-      const avatar = await AsyncStorage.getItem('avatarUrl')
-      setLastname(lname)
-      setFirstname(fname)
-      setAvt(avatar)
-      setLoading(false)
-    })()
+    axios.get('gift/work')
+      .then((response) => setData(response.data))
+      .catch((error) => console.log(error))
+      .finally(async () => {
+        const lname = await AsyncStorage.getItem('lastName')
+        const fname = await AsyncStorage.getItem('firstName')
+        const avatar = await AsyncStorage.getItem('avatarUrl')
+        setLastname(lname)
+        setFirstname(fname)
+        setAvt(avatar)
+        setLoading(false)
+      })
   }, [])
+
   if (loading) {
     return <Loadding />
   }
@@ -59,35 +64,7 @@ export default function MyGift({ route, navigation }) {
         </View>
         <ScrollView style={{ width: "100%", height: "100%", marginTop: 50 }} >
           <Center w="100%">
-            <View style={{
-              width: "90%",
-              flexDirection: "row",
-              alignItems: "center",
-              backgroundColor: "#FFF",
-              borderRadius: 10,
-              padding: 10,
-              marginHorizontal: 20,
-              marginTop: 20
-            }}>
-              <View style={{ flexDirection: 'column' }}>
-                <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
-                  30PERCENTOFDAY
-                </Text>
-                <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
-                  30% decrease of the month
-                </Text>
-                <View style={{ flexDirection: 'row' ,marginTop: 10 }}>
-                  <Icon name="clock" color="#000000" size={16}/>
-                  <Text style={{ fontSize: 14, marginLeft:5 }}>
-                     28/06/2022
-                  </Text>
-                  <Text style={{ fontSize: 14, marginLeft:10}}>
-                    25/7/2022
-                  </Text>
-                </View>
-              </View>
-              <Icon name="gift" color="#FF00AA" size={60} style={{marginLeft:40}}/>
-            </View>
+            {data.map((item, index) => <Gift key={index} data={item} />)}
           </Center>
         </ScrollView>
       </ImageBackground>

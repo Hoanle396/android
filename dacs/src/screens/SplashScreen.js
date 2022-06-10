@@ -1,5 +1,5 @@
-import React, { useState, useEffect} from 'react';
-import {View, StyleSheet,Image} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Image, AsyncStorage } from 'react-native';
 import logo from '../assets/logo.gif';
 import axios from '../../axios.config'
 const SplashScreen = props => {
@@ -7,12 +7,13 @@ const SplashScreen = props => {
 
   useEffect(() => {
     axios.get('auth/profile')
-    .then(() => {
-      setAuthLoaded(true);
-    })
-    .catch( () => {
-      props.navigation.replace('Login');
-    })
+      .then(async (response) => {
+        await AsyncStorage.setItem('money', "" + response.data.money);
+        setAuthLoaded(true);
+      })
+      .catch(() => {
+        props.navigation.replace('Login');
+      })
   }, []);
 
   useEffect(() => {
@@ -23,7 +24,7 @@ const SplashScreen = props => {
 
   return (
     <View style={styles.root}>
-      <Image style={styles.image} source={logo}/>
+      <Image style={styles.image} source={logo} />
     </View>
   );
 };
@@ -33,11 +34,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor:'#FFFFFF'
+    backgroundColor: '#FFFFFF'
   },
   image: {
-     width:100,
-     height:100
+    width: 100,
+    height: 100
   }
 });
 

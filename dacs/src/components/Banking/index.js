@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text, View } from 'react-native'
 
-const Banking = () => {
+const Banking = ({data}) => {
   return (
    <View style={{ width: '95%', height: 100, backgroundColor: '#FFFF', marginTop: 10,borderRadius: 10 }}>
    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -11,13 +11,13 @@ const Banking = () => {
          fontSize: 18,
          margin: 5
       }}
-      >19/05/2022 10:36:58</Text>
+      >{new Date(data.time).toUTCString().slice(0,25)}</Text>
       <Text style={{
          color: "#000",
          fontWeight: "bold",
          fontSize: 18,
          margin: 5
-      }}>Buy Course</Text>
+      }}>{data.note}</Text>
    </View>
    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
       <Text style={{
@@ -25,12 +25,12 @@ const Banking = () => {
          fontSize: 15,
          margin: 5
       }}
-      >Số tiền</Text>
+      >Amount</Text>
       <Text style={{
          color: "#000",
          fontSize: 18,
          margin: 5
-      }}>209003 VND</Text>
+      }}>{data.amount} VND</Text>
    </View>
    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
       <Text style={{
@@ -38,12 +38,12 @@ const Banking = () => {
          fontSize: 15,
          margin: 5
       }}
-      >Số dư</Text>
+      >After</Text>
       <Text style={{
          color: "#000",
          fontSize: 18,
          margin: 5
-      }}>501000 VND</Text>
+      }}>{data.after} VND</Text>
    </View>
 </View>
   )

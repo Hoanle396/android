@@ -1,20 +1,28 @@
 import { Center } from 'native-base'
 import React, { useEffect, useState } from 'react'
-import { AsyncStorage, Image, ImageBackground, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { AsyncStorage, ImageBackground, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import Loadding from '../../components/Loadding'
 import Icon from 'react-native-vector-icons/AntDesign'
 import Banking from '../../components/Banking'
+import axiosInstance from '../../../axios.config'
 const WalletHome = ({ route, navigation }) => {
-
+   const [data, setData] = useState([])
    const [loading, setLoading] = useState(true)
    const [money, setMoney] = useState(0)
    useEffect(() => {
       loadData()
    }, [])
-   const loadData = async () => {
-      const mn = await AsyncStorage.getItem('money')
-      setMoney(mn)
-      setLoading(false)
+   const loadData = () => {
+      axiosInstance.get('/wallet/cash')
+         .then((response) => {
+            setData(response.data)
+         })
+         .catch((error) => console.log(error.response))
+         .finally(async () => {
+            const mn = await AsyncStorage.getItem('money')
+            setMoney(mn)
+            setLoading(false)
+         })
    }
    if (loading) {
       return (<Loadding />)
@@ -122,7 +130,7 @@ const WalletHome = ({ route, navigation }) => {
                {/* {row.detail.map((item, index) =><Lession key={index} id={index+1} description={item.description} pressed={()=>navigation.navigate('learning',{url:item.lessonUrl})}/> ||<Text>no content</Text> )} */}
                <View><Text style={{ fontSize: 30, color: "#000000", fontWeight: "bold", marginLeft: 30 }}>History</Text></View>
                <Center w="100%">
-                  <Banking />
+                  {data.map((item, index) => <Banking key={index} data={item}/>)}
                </Center>
             </ScrollView>
          </ImageBackground>
