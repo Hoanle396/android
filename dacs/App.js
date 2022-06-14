@@ -6,6 +6,7 @@ import { NativeBaseProvider, extendTheme } from "native-base";
 import HomeScreen from './src/screens/HomeTab';
 import SplashScreen from './src/screens/SplashScreen';
 import LoginScreen from './src/screens/LoginScreen';
+import Learning from './src/screens/Profile/Learning';
 const Stack = createNativeStackNavigator();
 
 
@@ -38,6 +39,11 @@ const App = () => {
             options={{ animationEnabled: true, headerTitle: null, header: () => null }}
             component={HomeScreen}
           />
+
+          <Stack.Screen 
+          name="learning" 
+          options={{ animationEnabled: true, headerTitle: null, header: () => null }}
+          component={Learning} />
         </Stack.Navigator>
       </NavigationContainer>
     </NativeBaseProvider>

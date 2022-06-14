@@ -62,7 +62,7 @@ export default function Mylession({route,navigation}) {
                <ScrollView style={{ width: "100%", height: "100%", marginTop: 50 }} >
                   <Center w="100%">
                      <View style={{ paddingBottom: 30 }}><Text style={{ fontSize: 30, color: "#000000", fontWeight: "bold" }}>{row.title}</Text></View>
-                     {row.detail.map((item, index) =><Lession key={index} id={index+1} description={item.description} pressed={()=>navigation.navigate('learning',{url:item.lessonUrl})}/> ||<Text>no content</Text> )}
+                     {row.detail.map((item, index) =><Lession key={index} id={index+1} description={item.description} pressed={()=>navigation.navigate('learning',{url:item.lessonUrl,row:row})}/> ||<Text>no content</Text> )}
                   </Center>
                </ScrollView>
             </ImageBackground>

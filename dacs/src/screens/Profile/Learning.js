@@ -1,9 +1,12 @@
-import React from 'react'
-import { StyleSheet, View } from 'react-native';
+import React ,{useState} from 'react'
+import { StyleSheet, View, ScrollView ,Text} from 'react-native';
+import { Center } from 'native-base';
 import VideoPlayer from 'react-native-video-player';
+import Lession from '../../components/Mylession'
 import YouTube from 'react-native-youtube';
 export default function Learning({ route, navigation }) {
-   const { url } = route.params;
+   const { url, row } = route.params;
+   const [state,setState]=useState(url);
    return (
       <View style={{ width: '100%', height: '100%', backgroundColor: "#FFFFEE" }}>
          {/* <YouTube
@@ -17,20 +20,23 @@ export default function Learning({ route, navigation }) {
             style={{ alignSelf: 'stretch', height: 300 }}
          /> */}
          <VideoPlayer
-            video={{ uri: url }}
+            video={{ uri: state }}
             videoHeight={1200}
             videoWidth={2000}
             autoPlay={false}
-            showDuration={true} 
+            showDuration={true}
             disableFullscreen={false}
-            thumbnail={require('../../assets/hinhnen1.png')}/>
-         {/* // style={{
-         //    position: 'absolute',
-         //    top: 0,
-         //    left: 0,
-         //    bottom: 0,
-         //    right: 0,
-         // }} /> */}
+            controls={true}
+            thumbnail={require('../../assets/hinhnen1.png')} />
+         <ScrollView style={{ width: "100%", height: "100%", marginTop: 50 }} >
+            <Center w="100%">
+               <View style={{ paddingBottom: 30 }}><Text style={{ fontSize: 30, color: "#000000", fontWeight: "bold" }}>{row.title}</Text></View>
+               {row.detail.map((item, index) => <Lession
+                  key={index} id={index + 1}
+                  description={item.description}
+                  pressed={() =>setState(item.lessonUrl) }/> || <Text>no content</Text>)}
+            </Center>
+         </ScrollView>
       </View>)
 }
 var styles = StyleSheet.create({

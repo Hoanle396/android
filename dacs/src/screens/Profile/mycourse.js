@@ -76,7 +76,7 @@ export default function Mycourse({route,navigation}) {
               img={item.course.image}
               title={item.course.title}
               bg={item.course.background}
-              onPress={()=>navigation.navigate('mylession',{id:item.course.id})} />)}
+              onPress={()=>navigation.navigate('mylession',{id:item.course.id,data:data})} />)}
           </Center>
         </ScrollView>
       </ImageBackground>

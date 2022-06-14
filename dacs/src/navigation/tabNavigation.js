@@ -8,7 +8,7 @@ import Setting from '../screens/Profile'
 import WalletHome from '../screens/Wallet'
 import Mycourse from '../screens/Profile/mycourse';
 import Mylession from '../screens/Profile/mylession';
-import Learning from '../screens/Profile/Learning';
+// import Learning from '../screens/Profile/Learning';
 import MyGift from '../screens/Profile/MyGift';
 import Help from '../screens/Profile/Help';
 import Transfer from '../screens/Wallet/Transfer';
@@ -41,7 +41,7 @@ export function PersonScreen() {
       <SettingsStack.Screen name="Settings" component={Setting} />
       <SettingsStack.Screen name="Mycourse" component={Mycourse}/>
       <SettingsStack.Screen name="mylession" component={Mylession}/>
-      <SettingsStack.Screen name="learning" component={Learning}/>
+      {/* <SettingsStack.Screen name="learning" component={Learning}/> */}
       <SettingsStack.Screen name="mygift" component={MyGift}/>
       <SettingsStack.Screen name="help" component={Help}/>
     </SettingsStack.Navigator>
