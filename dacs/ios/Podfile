@@ -27,6 +27,8 @@ target 'dacs' do
 
   pod 'RNGoogleSignin', :path => '../node_modules/@react-native-google-signin/google-signin'
 
+  pod 'react-native-voice', :path => '../node_modules/react-native-voice'
+
   target 'dacsTests' do
     inherit! :complete
     # Pods for testing

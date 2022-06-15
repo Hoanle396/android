@@ -9,9 +9,7 @@ import Voice from 'react-native-voice';
 export const HomeScreen = (props) => {
   const [loading, setLoading] = useState(true)
   const [row,setRow] = useState([])
-  const [search,setSearch] = useState()
-  const [results, setResults] = useState([]);
-  const [partialResults, setPartialResults] = useState([]);
+  const [search, setSearch] = useState(null)
   useEffect(() => {
     loadData()
   }, [])
@@ -52,24 +50,33 @@ export const HomeScreen = (props) => {
       console.error(e);
     }
   };
-  const onSpeechPartialResults =  (e) => {
-    console.log('Results: ', e.value[0]);
-    setSearch(e.value[0]);
-    if(e.value[0]){
-      handleChange(e.value[0])
+  const onSpeechPartialResults = async (e) => {
+    if (e.value[0]) {
+      console.log('Results: ', e.value[0]);
+      setSearch(e.value[0]);
+      searchSpeech(e.value[0]);
     }
   };
-  const handleChange=  (e)=>{
-   axiosInstance.get('/course/search/'+e||search)
-    .then((response) => {
-      setRow(response.data)
-    })
-    .catch((error) => {
-      Alert.alert(error)
-    })
-    .finally(() => {
-      // setLoading(false)
-    })
+  const searchSpeech = (e) => {
+    axiosInstance.get('/course/search/' + e)
+      .then((response) => {
+        setRow(response.data)
+      })
+      .catch((error) => {
+        Alert.alert(error)
+      })
+  }
+  const handleChange = () => {
+    if (search) {
+      axiosInstance.get('/course/search/' + search)
+        .then((response) => {
+          setRow(response.data)
+        })
+        .catch((error) => {
+          Alert.alert(error)
+        })
+    }
+    else loadData()
   }
   if (loading) {
     return (<Loadding />)
@@ -111,7 +118,7 @@ export const HomeScreen = (props) => {
               }}
               value={search}
               onChangeText={(e)=>setSearch(e)}
-              onBlur={handleChange}
+              onBlur={() => handleChange()}
             />
             <TouchableOpacity onPress={startRecognizing}>
             <Icon name="microphone"  size={30}/>

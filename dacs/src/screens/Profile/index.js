@@ -86,7 +86,7 @@ const Setting = ({route,navigation}) => {
                   paddingHorizontal: 15,
                   justifyContent: "center"
                }}
-               onPress={() => navigation.navigate('Wallets')}
+               onPress={() => navigation.navigate('Wallet')}
                >
                   <View style={{
                      flexDirection: "row",

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.wenkesj.voice.VoicePackage;
 import com.reactnativegooglesignin.RNGoogleSigninPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
@@ -17,7 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import com.inprogress.reactnativeyoutube.ReactNativeYouTube;
 
-
+// import com.wenkesj.voice.VoicePackage;
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =
